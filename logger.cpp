@@ -7,8 +7,6 @@
 #include <ctime>
 #include <cstdint>
 
-#define DEBUG
-
 // static ---------------------------------------------------------------------
 
 static FILE* log_file = nullptr;
