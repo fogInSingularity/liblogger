@@ -72,15 +72,13 @@ LoggingStatus Log_(const char* const source_file_name,
     if (log_file == nullptr) { return LoggingStatus::kUninitLog; }
 
 #if defined (DEBUG)
+#if defined (LOG_SOURCE_LOCATION)
     time_t current_time = time(nullptr);
     if (current_time == (time_t)-1) {
         return LoggingStatus::kInternalError;
     }
     
     struct tm* current_tm = localtime(&current_time);
-
-    va_list args;
-    va_start(args, format_str);
 
     int printed = 0;
     printed = fprintf(log_file, 
@@ -99,6 +97,10 @@ LoggingStatus Log_(const char* const source_file_name,
 
     fputc('|', log_file);
     fputc(' ', log_file);
+#endif // LOG_SOURCE_LOCATION
+
+    va_list args;
+    va_start(args, format_str);
 
     const int kTabWidth = 2;
     for (int i = 0; i < indent_level * kTabWidth; i++) {
@@ -112,6 +114,26 @@ LoggingStatus Log_(const char* const source_file_name,
 #else 
     // do nothing    
 #endif // DEBUG
+    return LoggingStatus::kOk;
+}
+
+LoggingStatus RawWriteToLog(const char* const format_str, ...) {
+    assert(format_str       != nullptr);
+
+#if defined (DEBUG)
+
+    if (format_str == nullptr) { return LoggingStatus::kNullPassed; }    
+    if (log_file == nullptr) { return LoggingStatus::kUninitLog; }
+
+    va_list args;
+    va_start(args, format_str);
+
+    vfprintf(log_file, format_str, args);
+
+    va_end(args);
+
+#endif // DEBUG
+
     return LoggingStatus::kOk;
 }
 

@@ -41,6 +41,8 @@ LoggingStatus Log_(const char* const source_file_name,
                         const char* const format_str, 
                         ...) __attribute__(( format(printf, 4, 5)) );
 
+LoggingStatus RawWriteToLog(const char* const format_str, ...) __attribute__(( format(printf, 1, 2)) ); 
+
 const char* LogErrorToStr(const LoggingStatus log_status);
 
 #endif // LOGGER_HPP_
